@@ -1,0 +1,17 @@
+# For my new wonderful tower defense game!
+[globals]
+player=”chris”
+chartype=”blue tower”
+attributes={10; 20; 40; 70}
+multilist={“bob”, 10, true}
+[video] resolution=”1080x700”
+scalefactor=1.0f
+multidisplay=true
+[video:acceleration]
+DX12Flag=true 
+[audio]
+surround= headphones=whatever 
+# This is a malformed line 
+@=trueifIfeellikeit
+# Really should break! 
+[] # This should break! 
