@@ -12,5 +12,8 @@
 // TODO: add headers that you want to pre-compile here
 #include <stdio.h>
 #include <tchar.h>
+#include <vector>
+#include <map>
+using namespace std;
 
 #endif //PCH_H

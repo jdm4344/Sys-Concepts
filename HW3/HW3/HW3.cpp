@@ -7,11 +7,12 @@
 #include <iostream>
 #include <fstream>
 #include "Parser.h"
-using namespace std;
 
 int main()
 {
+	Parser regexParser;
 	ifstream inFile("config.txt", ios::binary);
+	char* fileContents;
 
 	if (inFile.is_open())
 	{
@@ -21,7 +22,7 @@ int main()
 		inFile.seekg(0, ios::beg);
 		
 		// Save data
-		char* fileContents = new char[length + 1];
+		fileContents = new char[length + 1];
 
 		inFile.read(fileContents, length);
 		fileContents[length] = 0;
@@ -32,6 +33,8 @@ int main()
 		delete fileContents;
 		inFile.close();
 	}
+
+
 
 	return 0;
 }
