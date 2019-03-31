@@ -11,8 +11,9 @@
 int main()
 {
 	Parser regexParser;
+	// CHANGE INPUT FILE HERE:
 	ifstream inFile("config.txt", ios::binary);
-	char* fileContents;
+	vector<string> fileContents;
 
 	if (inFile.is_open())
 	{
@@ -21,20 +22,28 @@ int main()
 		int length = (int)inFile.tellg();
 		inFile.seekg(0, ios::beg);
 		
-		// Save data
-		fileContents = new char[length + 1];
+		// Save file line by line as strings
+		string line;
 
-		inFile.read(fileContents, length);
-		fileContents[length] = 0;
+		while (getline(inFile, line))
+		{
+			fileContents.push_back(line);
+		}
 
-		cout << fileContents << endl;
+		// List out the base file for clarity
+		cout << "File contents:" << endl;
+		
+		for (size_t i = 0; i < fileContents.size(); i++)
+		{
+			cout << fileContents[i] << endl;
+		}
 
-		// Cleanup
-		delete fileContents;
+		// Close file
 		inFile.close();
 	}
 
-
+	// Send the file to the parser
+	regexParser.ParseFile(fileContents);
 
 	return 0;
 }

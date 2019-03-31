@@ -14,6 +14,7 @@
 #include <tchar.h>
 #include <vector>
 #include <map>
+#include <regex>
 using namespace std;
 
 #endif //PCH_H
