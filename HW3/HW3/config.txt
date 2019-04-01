@@ -1,18 +1,31 @@
 # For my new wonderful tower defense game!
 [globals]
 player="chris"
-chartype="blue tower"
+chartype="blue #tower"
 attributes={10; 20; 40; 70}
-multilist={"bob"; 10; true}
-[video] resolution="1080x700"
+multilist={"bob"; 10; true} # comment
+[video]
+resolution="1080x700"
 scalefactor=1.0f
-multidisplay=true
+multidisplay=true #comment
 # comment
 [video:acceleration]
-DX12Flag=true 
+[video:a#ccel=eration]
+[video:accel=eration]
+[vi=deo:acceleration]
+
+DX12Flag=true
 [audio]
 
-surround=headphones=whatever # This is a malformed line
+surround=
+headphones=whatever # This is a malformed line
+=true
 @=trueifIfeellikeit # Really should break! 
 
 [] # This should break! 
+[:]
+key=[section]
+key=[:brokenSubsection]
+key=[section:subsection]
+[brokenSection}
+[sketch{y;}section]
