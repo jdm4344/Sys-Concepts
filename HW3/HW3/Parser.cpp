@@ -84,7 +84,12 @@ string Parser::GetType(string section, string key)
 // Parses a vector of strings and converts to sections and associated key-value pairs
 void Parser::ParseFile(vector<string> fileContents)
 {
-
+	// Define regexes
+	regex comment { "#\s+(.)+" }; // #\\s(.)*
+	regex section { "(?:(?!\\[.*:.*\\])\\[.*\\])" };
+	regex subsection { "\\[.*:.*\\]" };
+	regex keyValue { "(?!.*[#;].*).+=.+" }; // #; exlcudes comments and list values
+	regex keyValueList { ".+={.+}" };
 
 
 }
