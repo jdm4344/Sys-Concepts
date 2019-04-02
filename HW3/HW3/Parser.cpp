@@ -85,10 +85,10 @@ string Parser::GetType(string section, string key)
 void Parser::ParseFile(vector<string> fileContents)
 {
 	// Define regexes
-	regex comment { "(?!.*[\"\[\]].*)#\s*(.) + " }; // ignore section names and values containing '#'
+	regex comment { "(?!.*[\"\\[\\]].*)#\\s*(.)+" }; // ignore section names and values containing '#'
 	regex section { "(?:(?!\\[.*:.*\\])^\\[.+\\])" };
-	regex subsection { "^\\[.+:.+\\]" };
-	regex keyValue { "(?!.*[#;:].*)^.+=.+" }; // #; exlcudes comments and list values
+	regex subsection { "^\\[[a-zA-Z0-9]+:[a-zA-Z0-9]+\\]" }; // ^\\[.+:.+\\]
+	regex keyValue { "(?!.*[;:].*)(?!^#)(?![#])(^[a-zA-Z0-9]+=.+)" }; // #; exlcudes comments and list values // (?!.*[#;:].*)^.+=.+
 	regex keyValueList { ".+={.+}" };
 
 
