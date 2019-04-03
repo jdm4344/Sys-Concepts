@@ -16,82 +16,90 @@ Parser::~Parser()
 }
 
 // Returns a list of names of all sections, not including subsections
-vector<string> Parser::ListAllSections()
+void Parser::ListAllSections()
 {
-	vector<string> sectionList;
+	cout << "Listing all sections:" << endl;
 
 	for (map<string, map<string,string>>::iterator it = sections->begin(); it != sections->end(); ++it) 
 	{
-		sectionList.push_back(it->first);
+		cout << it->first << endl;
 	}
-
-	return sectionList;
 }
 
-// Returns a section by name if it exists via parameter
-bool Parser::ListNamedSection(string sectionName, map <string, string>& section)
+// Returns a section by name if it exists
+void Parser::ListNamedSection(string sectionName)
 {
+	cout << "Listing section " << sectionName << ":" << endl;
+
 	if (sections->find(sectionName) != sections->end())
 	{
-		section = sections->at(sectionName);
+		map<string, string> section = sections->at(sectionName);
 		
-		return true;
+
 	}
-
-	return false;
 }
 
 //
-bool Parser::ListSubsections(string sectionName, vector<string>& subSection)
+void Parser::ListSubsections(string sectionName)
 {
-	
+	cout << "Listing subsections of " << sectionName << ":" << endl;
 
-	return false;
+
 }
 
 //
-map<string, string> Parser::ListAllEntries(string sectionName)
+void Parser::ListAllEntries(string sectionName)
 {
-	return map<string, string>();
+	cout << "Listing all entries in " << sectionName << ":" << endl;
 }
 
-//
-string Parser::GetEntry(string section, string key)
+// 
+void Parser::GetEntry(string section, string key)
 {
-	return string();
+	cout << "Value at key " << key << " is: " << endl;
 }
 
 //
-string Parser::GetKey(string section, string key)
+void Parser::GetKey(string section, string key)
 {
-	return string();
+
 }
 
 //
-string Parser::GetValue(string section, string key)
+void Parser::GetValue(string section, string key)
 {
-	return string();
+
 }
 
 //
-string Parser::GetType(string section, string key)
+void Parser::GetType(string section, string key)
 {
 	string dataType;
 
-	return dataType;
+	cout << "The type of " << " is " << dataType << endl;
 }
 
 // Parses a vector of strings and converts to sections and associated key-value pairs
 void Parser::ParseFile(vector<string> fileContents)
 {
 	// Define regexes
-	regex comment { "(?!.*[\"\\[\\]].*)#\\s*(.)+" }; // ignore section names and values containing '#'
-	regex section { "(?:(?!\\[.*:.*\\])^\\[.+\\])" };
+	regex comment { "(?!.*[\"].*)#\\s*(.)+" };
+	regex section { "(?!\\[.*:.*\\])^(?!.*[#{}])^\\[.+\\]" }; // Ignore sections including # // Backup: (?:(?!\\[.*:.*\\])^\\[.+\\])
 	regex subsection { "^\\[[a-zA-Z0-9]+:[a-zA-Z0-9]+\\]" }; // ^\\[.+:.+\\]
-	regex keyValue { "(?!.*[;:].*)(?!^#)(?![#])(^[a-zA-Z0-9]+=.+)" }; // #; exlcudes comments and list values // (?!.*[#;:].*)^.+=.+
+	regex keyValue { "(?!.*[;:\\[\\]].*)(?!^#)(?![#])(^[a-zA-Z0-9]+=.+)" }; // #; exlcudes comments and list values // (?!.*[#;:].*)^.+=.+
 	regex keyValueList { ".+={.+}" };
 
+	/* 
+	check for comment
+	if comment, check if there are characters before it
+	if other characters, get index of first character of the comment and create a substring with only what preceeds the comment
+	then, perform other regex checks
+	*/
 
+	for (int i = 0; i < fileContents.size(); i++)
+	{
+
+	}
 }
 
 
