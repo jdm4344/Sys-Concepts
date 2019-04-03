@@ -15,6 +15,7 @@ public:
 	void GetValue(string section, string key);
 	void GetType(string section, string key);
 	void ParseFile(vector<string> fileContents);
+	void RegexSwitch(string line); // Helper method containing regex parsing for non-comment lines
 
 	// Variables
 	map <string, map <string, string>>* sections; // map <sectionName, map <key, value>>
