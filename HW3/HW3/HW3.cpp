@@ -54,6 +54,7 @@ int main()
 	regexParser.ListSubsections("audio");
 
 	regexParser.ListAllEntries("globals");
+	regexParser.ListAllEntries("video");
 
 	regexParser.GetEntry("audio", "player");
 	regexParser.GetEntry("video", "resolution");
@@ -61,8 +62,11 @@ int main()
 	regexParser.GetKey("audio", "player");
 	regexParser.GetKey("video", "resolution");
 
-	regexParser.GetValue("video", "resolution");
-	regexParser.GetValue("video", "resolution");
+	regexParser.GetValue("video");
+	regexParser.GetValue("audio");
+
+	regexParser.GetType("globals", "player");
+	regexParser.GetType("video", "scalefactor");
 
 	/// TODO: Type parsing
 

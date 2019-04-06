@@ -23,7 +23,7 @@ Parser::~Parser()
 // Prints a list of names of all sections, not including subsections
 void Parser::ListAllSections()
 {
-	cout << "Listing all sections:" << endl;
+	cout << "\nListing all sections:" << endl;
 
 	for (map<string, map<string,string>>::iterator it = sections->begin(); it != sections->end(); ++it) 
 	{
@@ -34,7 +34,7 @@ void Parser::ListAllSections()
 // Prints the data within a section/subsection if it exists
 void Parser::ListNamedSection(string sectionName)
 {
-	cout << "Checking if section " << sectionName << "exists..." << endl;
+	cout << "\nChecking if section " << sectionName << " exists..." << endl;
 
 	if (sections->find(sectionName) != sections->end())
 	{
@@ -49,7 +49,7 @@ void Parser::ListNamedSection(string sectionName)
 // Prints the names of all Subsections in a given section
 void Parser::ListSubsections(string sectionName)
 {
-	cout << "Listing subsections of " << sectionName << ":" << endl;
+	cout << "\nListing subsections of " << sectionName << ":" << endl;
 
 	// Loop through all subsections and check if they belong to the specified sectiion
 	for (map<string, map<string, string>>::iterator it = subSections->begin(); it != subSections->end(); ++it)
@@ -68,7 +68,7 @@ void Parser::ListSubsections(string sectionName)
 // Prints all key-value pairs in a given section/subsection
 void Parser::ListAllEntries(string sectionName)
 {
-	cout << "Listing all entries in " << sectionName << ":" << endl;
+	cout << "\nListing all entries in " << sectionName << ":" << endl;
 
 	// First, check if the given section is a subsection
 	if (regex_match(sectionName, regSubsection, regex_constants::match_any))
@@ -99,20 +99,38 @@ void Parser::GetEntry(string sectionName, string key)
 	{
 		map<string, string> subSection = subSections->find(sectionName)->second;
 
-		cout << "Entry at " << key << " in " << sectionName << " is " << subSection.find(key)->second << endl;
+		map<string, string>::iterator it = subSection.find(key);
+
+		if (it != subSection.end())
+		{
+			cout << "Entry at " << key << " in " << sectionName << " is " << it->second << endl;
+		}
+		else
+		{
+			cout << "Error: Threre is no key \"" << key << "\" in section " << sectionName << endl;
+		}
 	}
 	else // just a section
 	{
 		map<string, string> section = sections->find(sectionName)->second;
 
-		cout << "Entry at " << key << " in " << sectionName << " is " << section.find(key)->second << endl;
+		map<string,string>::iterator it = section.find(key);
+
+		if (it != section.end())
+		{
+			cout << "Entry at " << key << " in " << sectionName << " is " << it->second << endl;
+		}
+		else
+		{
+			cout << "Error: Threre is no key \"" << key << "\" in section " << sectionName << endl;
+		}
 	}
 }
 
 // Prints the key part of all entries in a section
 void Parser::GetKey(string sectionName, string key)
 {
-	cout << "Listing all keys in section: " << sectionName << endl;
+	cout << "\nListing all keys in section: " << sectionName << endl;
 
 	// First, check if the given section is a subsection
 	if (regex_match(sectionName, regSubsection, regex_constants::match_any))
@@ -121,7 +139,7 @@ void Parser::GetKey(string sectionName, string key)
 
 		for (map<string, string>::iterator it = subSection.begin(); it != subSection.end(); ++it)
 		{
-			cout << it->first;
+			cout << it->first << endl;
 		}
 	}
 	else // just a section
@@ -130,15 +148,15 @@ void Parser::GetKey(string sectionName, string key)
 
 		for (map<string, string>::iterator it = section.begin(); it != section.end(); ++it)
 		{
-			cout << it->first;
+			cout << it->first << endl;
 		}
 	}
 }
 
 // Prints the value part of all entries in a section
-void Parser::GetValue(string sectionName, string key)
+void Parser::GetValue(string sectionName)
 {
-	cout << "Listing all values in section: " << sectionName << endl;
+	cout << "\nListing all values in section: " << sectionName << endl;
 
 	// First, check if the given section is a subsection
 	if (regex_match(sectionName, regSubsection, regex_constants::match_any))
@@ -147,7 +165,7 @@ void Parser::GetValue(string sectionName, string key)
 
 		for (map<string, string>::iterator it = subSection.begin(); it != subSection.end(); ++it)
 		{
-			cout << it->second;
+			cout << it->second << endl;
 		}
 	}
 	else // just a section
@@ -156,7 +174,7 @@ void Parser::GetValue(string sectionName, string key)
 
 		for (map<string, string>::iterator it = section.begin(); it != section.end(); ++it)
 		{
-			cout << it->second;
+			cout << it->second << endl;
 		}
 	}
 }
@@ -165,8 +183,66 @@ void Parser::GetValue(string sectionName, string key)
 void Parser::GetType(string sectionName, string key)
 {
 	string dataType = "";
+	string value = "";
 
-	cout << "The type of " << " is " << dataType << endl;
+	cout << "\nGetting type of value at key: " << key << endl;
+
+	// First, check if the given section is a subsection
+	if (regex_match(sectionName, regSubsection, regex_constants::match_any))
+	{
+		map<string, string> subSection = subSections->find(sectionName)->second;
+
+		map<string, string>::iterator it = subSection.find(key);
+
+		if (it != subSection.end())
+		{
+			value = it->second;
+		}
+		else
+		{
+			cout << "Error: Threre is no key \"" << key << "\" in section " << sectionName << endl;
+		}
+	}
+	else // just a section
+	{
+		map<string, string> section = sections->find(sectionName)->second;
+
+		map<string, string>::iterator it = section.find(key);
+
+		if (it != section.end())
+		{
+			value = it->second;
+		}
+		else
+		{
+			cout << "Error: Threre is no key \"" << key << "\" in section " << sectionName << endl;
+			return;
+		}
+	}
+
+	// Check type
+	if (regex_search(value, regListType, regex_constants::match_any)) // List
+	{
+		dataType = "list";
+	}
+	else if (regex_search(value, regBoolType, regex_constants::match_any)) // Bool
+	{
+		dataType = "bool";
+	}
+	else if (regex_search(value, regStringType, regex_constants::match_any)) // String
+	{
+		dataType = "string";
+	}
+	else if (regex_search(value, regIntType, regex_constants::match_any)) // Int
+	{
+		dataType = "int";
+	}
+	else if (regex_search(value, regFloatType, regex_constants::match_any)) // Float
+	{
+		dataType = "float";
+	}
+	
+	cout << "The type is " << dataType << endl;
 }
 
 // Parses a vector of strings and converts to sections and associated key-value pairs
@@ -187,22 +263,23 @@ void Parser::ParseFile(vector<string> fileContents)
 	{
 		currentLine = fileContents[i];
 
+		cout << "Current line (" << i << ") is: " << currentLine << endl;
+
 		// Remove comments
-		if (regex_match(currentLine, regComment, regex_constants::match_any))
+		if (regex_search(currentLine, regComment, regex_constants::match_any))
 		{
 			// There is a comment
 			int commentPos = currentLine.find_first_of("#"); // Find the start of the comment
 			if (commentPos > currentLine.length() || commentPos == 0)
 			{
 				// # either does not exist or is at the start of the line, so there is no other content
-				break;
 			}
 			else
 			{
 				// There is more to the line so parse it further
 				// Set the line equal to itself minus what is between the comment start and end
 				cout << "Line " << i << " contains a comment, removing" << endl;
-				fileContents[i] = currentLine.substr(0, currentLine.length() - commentPos);
+				currentLine = currentLine.substr(0, commentPos);
 
 				RegexSwitch(currentLine, i);
 			}
@@ -220,10 +297,10 @@ void Parser::RegexSwitch(string line, int lineIndex)
 {
 	string formattedLine = "";
 
-	if (regex_match(line, regSection, regex_constants::match_any)) // line is a section
+	if (regex_search(line, regSection, regex_constants::match_any)) // line is a section
 	{
 		// Remove the brackets from the section name
-		formattedLine = line.substr(1, line.length() - 2);
+		formattedLine = line.substr(1, line.length() - 3);
 		map<string, string> emptyMap; // new empty map
 		sections->insert(pair<string, map<string, string>>(formattedLine, emptyMap));
 		
@@ -232,21 +309,21 @@ void Parser::RegexSwitch(string line, int lineIndex)
 		// if there is a new section, the last subsection is invalid so reset it:
 		newestSubsection = "";
 	}
-	else if (regex_match(line, regSubsection, regex_constants::match_any)) // line is a subsection
+	else if (regex_search(line, regSubsection, regex_constants::match_any)) // line is a subsection
 	{
 		// Remove the brackets from the section name
-		formattedLine = line.substr(1, line.length() - 2);
+		formattedLine = line.substr(1, line.length() - 3);
 		map<string, string> emptyMap; // new empty map
-		sections->insert(pair<string, map<string, string>>(formattedLine, emptyMap));
+		subSections->insert(pair<string, map<string, string>>(formattedLine, emptyMap));
 
 		// Save as the latest subsection that was added
 		newestSubsection = formattedLine;
 	}
-	else if (regex_match(line, regKeyValue, regex_constants::match_any)) // line is a key-value pair
+	else if (regex_search(line, regKeyValue, regex_constants::match_any)) // line is a key-value pair
 	{
 		// Separate the key and value
 		int equalsPos = line.find_first_of("=");
-		string key = line.substr(0, equalsPos - 1);
+		string key = line.substr(0, equalsPos);
 		string value = line.substr(equalsPos + 1, line.length());
 
 		// if there is a newestSubsection, we are within it, so place the key-value there
@@ -260,13 +337,13 @@ void Parser::RegexSwitch(string line, int lineIndex)
 			sections->find(newestSection)->second.insert(pair<string, string>(key, value));
 		}
 	}
-	else if (regex_match(line, regKeyValueList, regex_constants::match_any)) // line is a key=list pair
+	else if (regex_search(line, regKeyValueList, regex_constants::match_any)) // line is a key=list pair
 	{
 		/// TODO: This is doing the same thing as the prior if() so combine the two
 		
 		// Separate the key and value
 		int equalsPos = line.find_first_of("=");
-		string key = line.substr(0, equalsPos - 1);
+		string key = line.substr(0, equalsPos);
 		string value = line.substr(equalsPos + 1, line.length());
 
 		// if there is a newestSubsection, we are within it, so place the key-value there
