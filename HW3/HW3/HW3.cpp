@@ -1,11 +1,9 @@
 // HW3.cpp : This file contains the 'main' function. Program execution begins and ends there.
 // Jordan Machalek
 // HW 3
-//
+// NOTE: Type parsing not implemented
 
 #include "pch.h"
-#include <iostream>
-#include <fstream>
 #include "Parser.h"
 
 int main()
@@ -31,19 +29,47 @@ int main()
 		}
 
 		// List out the base file for clarity
-		cout << "File contents:" << endl;
+		/*cout << "File contents:" << endl;
 		
 		for (size_t i = 0; i < fileContents.size(); i++)
 		{
 			cout << fileContents[i] << endl;
-		}
+		}*/
 
 		// Close file
 		inFile.close();
 	}
 
+	cout << "Testing Parser:" << endl;
+
 	// Send the file to the parser
 	regexParser.ParseFile(fileContents);
+
+	regexParser.ListAllSections();
+
+	regexParser.ListNamedSection("audio");
+	regexParser.ListNamedSection("video");
+	regexParser.ListNamedSection("disco");
+
+	regexParser.ListSubsections("audio");
+
+	regexParser.ListAllEntries("globals");
+	regexParser.ListAllEntries("video");
+
+	regexParser.GetEntry("audio", "player");
+	regexParser.GetEntry("video", "resolution");
+
+	regexParser.GetKey("audio", "player");
+	regexParser.GetKey("video", "resolution");
+
+	regexParser.GetValue("video");
+	regexParser.GetValue("audio");
+
+	regexParser.GetType("globals", "player");
+	regexParser.GetType("video", "scalefactor");
+
+	/// TODO: Type parsing
+
 
 	return 0;
 }
