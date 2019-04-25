@@ -15,12 +15,62 @@ int numClients = 0;
 int numBarbers = 0;
 int waiting = 0;
 
-// semaphore customers = 0;
-// semaphore barbers = 0;
-// semaphore mutex = 1;
+ Semaphore customers;
+ Semaphore barbers;
+ Semaphore mutexSem;
 
 vector<thread> clientThreads;
 vector<thread> barberThreads;
+
+//struct BoundedBuffer {
+//	int* buffer;
+//	int capacity;
+//
+//	int front;
+//	int rear;
+//	int count;
+//
+//	std::mutex lock;
+//
+//	std::condition_variable not_full;
+//	std::condition_variable not_empty;
+//
+//	BoundedBuffer(int capacity) : capacity(capacity), front(0), rear(0), count(0) {
+//		buffer = new int[capacity];
+//	}
+//
+//	~BoundedBuffer() {
+//		delete[] buffer;
+//	}
+//
+//	void deposit(int data) {
+//		std::unique_lock<std::mutex> l(lock);
+//
+//		not_full.wait(l, [this]() {return count != capacity; });
+//
+//		buffer[rear] = data;
+//		rear = (rear + 1) % capacity;
+//		++count;
+//
+//		l.unlock();
+//		not_empty.notify_one();
+//	}
+//
+//	int fetch() {
+//		std::unique_lock<std::mutex> l(lock);
+//
+//		not_empty.wait(l, [this]() {return count != 0; });
+//
+//		int result = buffer[front];
+//		front = (front + 1) % capacity;
+//		--count;
+//
+//		l.unlock();
+//		not_full.notify_one();
+//
+//		return result;
+//	}
+//};
 
 class Semaphore {
 public:
@@ -29,14 +79,14 @@ public:
 		count = ct;
 	}
 
-	void up()
+	inline void up(int threadId)
 	{
 		unique_lock<mutex> lock(mtx);
 		count++;
 		cv.notify_one();
 	}
 
-	void down()
+	inline void down(int threadId)
 	{
 		unique_lock<mutex> lock(mtx);
 
@@ -53,7 +103,7 @@ private:
 	int count;
 };
 
-void Barber() {
+void Barber(int id, Semaphore& sem) {
 	while (true)
 	{
 		// down(customers); // go to sleep if # of customers = 0
@@ -65,7 +115,7 @@ void Barber() {
 	}
 }
 
-void Customer()
+void Customer(int id, Semaphore& sem)
 {
 	if (waiting < numChairs)
 	{
@@ -75,10 +125,12 @@ void Customer()
 		// up(mutex); // release access to 'waiting'
 		// down(barbers); // go to sleep if # of free barbers = 0
 		// getHaircut(); // be seated and served
+		cout << "Custome is recieving their haircut" << endl;
 	}
 	else
 	{
 		// up(mutex); // shop is full, do not wait
+		cout << "Not enough chairs, customer leaves" << endl;
 	}
 }
 
@@ -103,7 +155,29 @@ int main()
 		cin >> numBarbers;
 	}
 
+	//BoundedBuffer chairs(numChairs);
 
+	customers = Semaphore(numClients);
+	barbers = Semaphore(numBarbers);
+	mutexSem = Semaphore(numChairs);
+
+	// Create threads
+	for (int i = 0; i < numBarbers; i++) {
+		barberThreads.push_back(thread(Barber, i, std::ref(mutexSem)));
+	}
+
+	for (int i = 0; i < numClients; i++) {
+		clientThreads.push_back(thread(Customer, i, std::ref(mutexSem)));
+	}
+
+	// Start threads
+	for (auto& thread : barberThreads) {
+		thread.join();
+	}
+
+	for (auto& thread : clientThreads) {
+		thread.join();
+	}
 
 	return 0;
 }
